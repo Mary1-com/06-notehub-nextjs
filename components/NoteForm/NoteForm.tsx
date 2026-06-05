@@ -1,68 +1,69 @@
-import css from './NoteForm.module.css'import {Formik, Form,  Field,  ErrorMessage} from "formik";
-// import * as Yup from "yup";
-// import css from "./NoteForm.module.css";
-import { useMutation, useQueryClient, } from "@tanstack/react-query";
-// import { createNote } from "@/components/services/noteService";
+"use client";
 
-interface NoteFormProps { onClose: () => void; }
-interface FormValues {
-    title: string;
-    content: string;
-    tag: | "Todo" | "Work" | "Personal" | "Meeting" | "Shopping";
-}
-const initialValues: FormValues = { title: "", content: "", tag: "Todo", };
+import { FormEvent } from "react";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
+import { createNote } from "@/lib/api";
+import type { NoteTag } from "@/types/note";
+import css from "./NoteForm.module.css";
 
-// const validationSchema = Yup.object({
-//     title: Yup.string().min(3, "Title must be at least 3 characters").max(50, "Title must be at most 50 haracters").required("Title is required"),
-//     content: Yup.string().max(500, "Content must be at most 500 characters"),
-//     tag: Yup.string().oneOf(["Todo", "Work", "Personal", "Meeting", "Shopping",], "Invalid tag").required("Tag is required")
-// });
+interface NoteFormProps {    onClose: () => void;    }
 
-export default function NoteForm({ onClose, }: NoteFormProps) {
-    const handleSubmit = (values: FormValues) => {
-        // console.log(values);
-        // onClose();
-        mutation.mutate(values);
-    };
-const queryClient = useQueryClient();    
-const mutation = useMutation({
-    mutationFn: createNote, onSuccess: () => {
-        queryClient.invalidateQueries({ queryKey: ["notes"], });
-        onClose();
-    }
-});
-    return (
-        <Formik initialValues={initialValues} validationSchema={validationSchema} onSubmit={handleSubmit}>
-            <Form className={css.form}>
-                <div className={css.formGroup}>
-                    <label htmlFor="title">Title</label>
-                    <Field id="title" name="title" type="text" className={css.input} />
-                    <ErrorMessage name="title" component="span" className={css.error} />
-                </div>
 
-                <div className={css.formGroup}>
-                    <label htmlFor="content"> Content </label>
-                    <Field as="textarea" id="content" name="content" rows={8} className={css.textarea} />
-                    <ErrorMessage name="content" component="span" className={css.error} />
-                </div>
+export default function NoteForm({ onClose }: NoteFormProps) {
+    const queryClient = useQueryClient();
 
-                <div className={css.formGroup}>
-                    <label htmlFor="tag">Tag</label>
-                    <Field as="select" id="tag" name="tag" className={css.select}>
-                        <option value="Todo">Todo</option>
-                        <option value="Work">Work</option>
-                        <option value="Personal">Personal</option>
-                        <option value="Meeting">Meeting</option>
-                        <option value="Shopping">Shopping</option>
-                    </Field>
-                    <ErrorMessage name="tag" component="span" className={css.error} />
-                </div>
-
-                <div className={css.actions}>
-                    <button type="button" onClick={onClose} className={css.cancelButton}>Cancel</button>
-                    <button type="submit" className={css.submitButton} disabled={mutation.isPending}>Create note</button>
-                </div>
-            </Form>
-        </Formik>);
-}
+    const mutation = useMutation({
+        mutationFn: createNote,
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: ["notes"] });
+            onClose();
+        },
+    });
     
+    const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+        event.preventDefault();
+
+        const form = event.currentTarget;
+        const formData = new FormData(form);
+
+        mutation.mutate({
+            title: String(formData.get("title")),
+            content: String(formData.get("content")),
+            tag: formData.get("tag") as NoteTag,
+        });
+    };
+
+    return (
+        <form className={css.form} onSubmit={handleSubmit}>
+        <label className={css.label}>
+            Title
+            <input className={css.input} type="text" name="title" required />
+        </label>
+
+        <label className={css.label}>
+            Content
+            <textarea className={css.textarea} name="content" required />
+        </label>
+
+        <label className={css.label}>
+            Tag
+            <select className={css.select} name="tag" defaultValue="Todo">
+            <option value="Todo">Todo</option>
+            <option value="Work">Work</option>
+            <option value="Personal">Personal</option>
+            <option value="Meeting">Meeting</option>
+            <option value="Shopping">Shopping</option>
+            </select>
+        </label>
+
+        <div className={css.actions}>
+            <button type="button" onClick={onClose}>
+            Cancel
+            </button>
+            <button type="submit" disabled={mutation.isPending}>
+            {mutation.isPending ? "Creating..." : "Create note"}
+            </button>
+            </div>
+        </form>
+    );
+};

@@ -6,6 +6,8 @@ import NoteList from "@/components/NoteList/NoteList";
 import { useState } from "react";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
+import NoteModal from "@/components/NoteModal/NoteModal";
+import NoteForm from "@/components/NoteForm/NoteForm";
 
 export default function NotesClient() {
     const [page, setPage] = useState(1);
@@ -21,11 +23,15 @@ export default function NotesClient() {
         setSearch(value);
         setPage(1);
     };
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     return (
         <>
             <SearchBox onSearch={setSearch} /> 
+            <button type="button" onClick={() => setIsModalOpen(true)}>
+                Create note +
+            </button>
             {totalPages > 1 && (
                 <Pagination
                 pageCount={totalPages}
@@ -37,10 +43,11 @@ export default function NotesClient() {
             {error && <p>Something went wrong.</p>}
             <h1>Notes</h1>
             <NoteList notes={data?.notes ?? []} />
-            {/* <NoteList notes={notes} /> */}
-
-        {/* Pagination */}
-        {/* NoteList */}
+            {isModalOpen && (
+                <NoteModal onClose={() => setIsModalOpen(false)}>
+                    <NoteForm onClose={() => setIsModalOpen(false)} />
+                </NoteModal>
+            )}
         </>
     );
 }
