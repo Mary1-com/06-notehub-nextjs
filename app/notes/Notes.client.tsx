@@ -8,6 +8,7 @@ import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
 import NoteModal from "@/components/NoteModal/NoteModal";
 import NoteForm from "@/components/NoteForm/NoteForm";
+import { useDebouncedCallback } from "use-debounce";
 
 export default function NotesClient() {
     const [page, setPage] = useState(1);
@@ -19,16 +20,16 @@ export default function NotesClient() {
     });
     const notes = data?.notes ?? [];
     const totalPages = data?.totalPages ?? 0;
-    const handleSearch = (value: string) => {
+    // 
+    const handleSearch = useDebouncedCallback((value: string) => {
         setSearch(value);
         setPage(1);
-    };
+    }, 500);
     const [isModalOpen, setIsModalOpen] = useState(false);
-
 
     return (
         <>
-            <SearchBox onSearch={setSearch} /> 
+            <SearchBox onSearch={handleSearch} />
             <button type="button" onClick={() => setIsModalOpen(true)}>
                 Create note +
             </button>
