@@ -26,11 +26,15 @@ export async function fetchNotes({ page = 1, search = "", perPage = 12 }: FetchN
     return response.data;
 }
 
-export async function fetchNoteById(id: string) {
-    const response = await api.get(`/notes/${id}`);
+// export async function fetchNoteById(id: string) {
+//     const response = await api.get(`/notes/${id}`);
+//     return response.data;
+// }
+
+export async function fetchNoteById(id: string): Promise<Note> {
+    const response = await api.get<Note>(`/notes/${id}`);
     return response.data;
 }
-
 interface CreateNoteParams {
     title: string;
     content: string;
