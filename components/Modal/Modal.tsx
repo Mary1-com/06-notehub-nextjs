@@ -10,27 +10,28 @@ interface ModalProps {
     onClose: () => void;
     }
 
-    export default function Modal({ children, onClose,}: ModalProps) {
+export default function Modal({ children, onClose, }: ModalProps) {
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
-        if (event.key === "Escape") {
-            onClose();
-        }
+            if (event.key === "Escape") {
+                onClose();
+            }
         };
 
         window.addEventListener("keydown", handleEsc);
 
-        return () => { window.removeEventListener("keydown", handleEsc); };
+        return () => {
+            window.removeEventListener("keydown", handleEsc);
+        };
     }, [onClose]);
-
-    if (typeof document === "undefined") {return null;}
+        
 
     return createPortal(
-        <div  className={css.backdrop} onClick={onClose}>
-            <div className={css.modal} onClick={(e) => e.stopPropagation()}>
+        <div className={css.backdrop} onClick={onClose}>
+            <div className={css.modal} onClick={(event) => event.stopPropagation()}>
                 {children}
             </div>
         </div>,
         document.body
     );
-    }
+}
