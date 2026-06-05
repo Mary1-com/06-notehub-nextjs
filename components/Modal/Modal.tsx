@@ -10,7 +10,7 @@ interface ModalProps {
     onClose: () => void;
     }
 
-    export default function NoteModal({ children, onClose,}: ModalProps) {
+    export default function Modal({ children, onClose,}: ModalProps) {
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
         if (event.key === "Escape") {

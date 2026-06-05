@@ -6,7 +6,7 @@ import NoteList from "@/components/NoteList/NoteList";
 import { useState } from "react";
 import SearchBox from "@/components/SearchBox/SearchBox";
 import Pagination from "@/components/Pagination/Pagination";
-import NoteModal from "@/components/Modal/Modal";
+import Modal from "@/components/Modal/Modal";
 import NoteForm from "@/components/NoteForm/NoteForm";
 import { useDebouncedCallback } from "use-debounce";
 
@@ -45,9 +45,9 @@ export default function NotesClient() {
             <h1>Notes</h1>
             <NoteList notes={data?.notes ?? []} />
             {isModalOpen && (
-                <NoteModal onClose={() => setIsModalOpen(false)}>
+                <Modal onClose={() => setIsModalOpen(false)}>
                     <NoteForm onClose={() => setIsModalOpen(false)} />
-                </NoteModal>
+                </Modal>
             )}
         </>
     );
