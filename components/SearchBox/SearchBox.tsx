@@ -1,10 +1,29 @@
-import css from "./SearchBox.module.css";
-interface SearchBoxProps {
-    onSearch: (value: string) => void;
-}
+// import css from "./SearchBox.module.css";
+// interface SearchBoxProps {
+//     onSearch: (value: string) => void;
+// }
 
-export default function SearchBox({ onSearch }: SearchBoxProps) {
+// export default function SearchBox({ onSearch }: SearchBoxProps) {
+//     return (
+//         <input className={css.input} type="text" placeholder="Search notes" onChange={(event) => onSearch(event.target.value)} />
+//     );
+// }
+
+import css from "./SearchBox.module.css";
+
+interface SearchBoxProps {   onSearch: (value: string) => void;    }
+
+    export default function SearchBox({ onSearch }: SearchBoxProps) {
     return (
-        <input className={css.input} type="text" placeholder="Search notes" onChange={(event) => onSearch(event.target.value)} />
+        <input
+            className={css.input}
+            type="text"
+            placeholder="Search notes"
+            // 
+            onChange={(event) => {
+            console.log("SEARCH:", event.target.value);
+            onSearch(event.target.value);
+            }}
+        />
     );
-}
+    }
