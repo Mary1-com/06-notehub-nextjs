@@ -17,6 +17,7 @@ export default function NotesClient() {
         queryKey: ["notes", page, search],
         queryFn: () => fetchNotes({ page, search }),
         placeholderData: (previousData) => previousData,
+        refetchOnMount: false,
     });
     const notes = data?.notes ?? [];
     const totalPages = data?.totalPages ?? 0;
