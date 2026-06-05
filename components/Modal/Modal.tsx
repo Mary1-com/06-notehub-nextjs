@@ -9,31 +9,34 @@ interface NoteModalProps { children: ReactNode; onClose: () => void; }
 export default function NoteModal({ children, onClose }: NoteModalProps) {
     useEffect(() => {
         const originalBodyOverflow = document.body.style.overflow;
-        
         document.body.style.overflow = "hidden";
-
-        return () => {
-            document.body.style.overflow = originalBodyOverflow;
-        };
+        
+        return () => { document.body.style.overflow = originalBodyOverflow; };
     }, []);
     
     useEffect(() => {
         const handleEsc = (event: KeyboardEvent) => {
-            if (event.key === "Escape") { onClose(); }
+            if (event.key === "Escape") {
+                onClose();
+            }
         };
-        
-        window.addEventListener("keydown", handleEsc);
 
+        window.addEventListener("keydown", handleEsc);
+        
         return () => {
             window.removeEventListener("keydown", handleEsc);
         };
     }, [onClose]);
     
+    const handleBackdropClick = (event: React.MouseEvent<HTMLDivElement>) => {
+        if (event.target === event.currentTarget) {
+            onClose();
+        }
+    };
+    
     return createPortal(
-        <div className={css.backdrop} onClick={onClose}>
-            <div className={css.modal} onClick={(event) => event.stopPropagation()}>
-                {children}
-            </div>
+        <div className={css.backdrop} onClick={handleBackdropClick}>
+            <div className={css.modal}>{children}</div>
         </div>,
         document.body
     );
